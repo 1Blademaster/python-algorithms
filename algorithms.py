@@ -21,6 +21,45 @@ def selectionSort(num_list):
 
 	return num_list
 
+def insertionSort(num_list):
+	for i in range(1, len(num_list)):
+		j = i - 1
+		while j >= 0 and num_list[j] > num_list[i]:
+			num_list[i] = num_list[j]
+			j -= 1
+		num_list[j + 1] = num_list[i]
+
+	return num_list
+
+def quickSortPartition(num_list, low, high):
+	pivotPoint = num_list[(low + high) // 2]
+	i = low - 1
+	j = high + 1
+	while True:
+		i += 1
+		while num_list[i] < pivotPoint:
+			i += 1
+
+		j -= 1
+		while num_list[j] > pivotPoint:
+			j -= 1
+
+		if i >= j:
+			return j
+
+		num_list[i], num_list[j] = num_list[j], num_list[i]
+
+def quickSort(num_list):
+	def _quickSort(items_list, low, high):
+		if low < high:
+			splitIndex = quickSortPartition(items_list, low, high)
+			_quickSort(items_list, low, splitIndex)
+			_quickSort(items_list, splitIndex + 1, high)
+	
+	_quickSort(num_list, 0, len(num_list) - 1)
+
+	return num_list
+
 def calcTime(func, args):
 	startTime = time.perf_counter()
 	func(args)
@@ -30,16 +69,15 @@ def calcTime(func, args):
 	return formatEndTime, actualEndTime
 
 if __name__ == '__main__':
-	randomNumList = []
-	for i in range(1000):
-		randomNumList.append(random.randint(0, 10000))
+	randomNumList = [random.randint(0, 10000) for iter in range(100000)]
 
 	bubbleSortTime, actualBubbleSortTime = calcTime(bubbleSort, randomNumList)
 	selectionSortTime, actualSelectionSortTime = calcTime(selectionSort, randomNumList)
-
-	percentageDifference = ((actualBubbleSortTime - actualSelectionSortTime) / ((actualBubbleSortTime + actualSelectionSortTime) / 2)) * 100
+	insertionSortTime, actualInsertionSortTime = calcTime(insertionSort, randomNumList)
+	quickSortTime, actualQuickSortTime = calcTime(quickSort, randomNumList)
 
 	print(f'Time for bubble sort: {bubbleSortTime}s')
 	print(f'Time for selection sort: {selectionSortTime}s')
-	print(f'Percentage difference between algorithms: {percentageDifference}%')
+	print(f'Time for insertion sort: {insertionSortTime}s')
+	print(f'Time for quick sort: {quickSortTime}s')
 	
